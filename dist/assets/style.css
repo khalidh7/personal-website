@@ -5,6 +5,7 @@
   --muted: #aaa688;
   --faint: #5e604e;
   --glow: #d4c994;
+  --intro: #d2c793;
 }
 :root:has(body.light) { color-scheme: light; }
 body.light {
@@ -13,6 +14,7 @@ body.light {
   --muted: #656b59;
   --faint: #989985;
   --glow: #4f5e48;
+  --intro: #675f3b;
   background: radial-gradient(circle at 52% 45%, rgba(95, 105, 82, .1), transparent 48%), var(--bg);
 }
 * { box-sizing: border-box; }
@@ -93,12 +95,26 @@ main {
 .identity { transform: none; }
 .eyebrow {
   margin: 0 0 8px;
-  color: var(--ink);
-  font-size: clamp(15px, 1.65vw, 22px);
+  color: var(--intro);
+  font-size: clamp(17px, calc(1.65vw + 2px), 24px);
   line-height: 1.85;
   letter-spacing: -.03em;
   text-transform: none;
 }
+.typed-intro {
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.terminal-cursor {
+  display: inline-block;
+  width: .52em;
+  height: 1em;
+  background: var(--intro);
+  vertical-align: -.14em;
+  animation: blinkIntro 1050ms step-end infinite;
+}
+@keyframes blinkIntro { 50% { opacity: 0; } }
 h1 {
   margin: 0;
   max-width: 850px;
@@ -155,6 +171,7 @@ footer p { margin: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   canvas, .prompt { display: none; }
+  .terminal-cursor { animation: none; }
 }
 
 /* Projects — long-form case studies */
@@ -170,8 +187,10 @@ footer p { margin: 0; }
   opacity: 0;
   transform: translateY(calc(-100% - 28px));
   pointer-events: none;
-  transition: opacity 180ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1);
   will-change: opacity, transform;
+}
+.project-page.nav-ready header {
+  transition: opacity 180ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1);
 }
 .project-page header.nav-visible {
   opacity: 1;
@@ -556,7 +575,7 @@ footer p { margin: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .project-page { scroll-behavior: auto; }
-  .project-page header { transition: none; }
+  .project-page.nav-ready header { transition: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .raft-viz *,.cpu-bars i::after,.memory-vm i::after,.memory-transfer b { animation: none !important; }
   .raft-phase .phase-one { opacity: 1; }

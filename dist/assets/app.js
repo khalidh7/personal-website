@@ -3,6 +3,7 @@ const context = canvas.getContext('2d');
 const themeButton = document.querySelector('#theme');
 const projectPage = document.body.classList.contains('project-page');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const typedCopy = document.querySelector('.typed-copy');
 const glyphs = ['.', '·', ':', '/', '\\', '|', '`'];
 const texture = [];
 const ripples = [];
@@ -10,6 +11,21 @@ let width = 0;
 let height = 0;
 let dpr = 1;
 let frame = 0;
+
+if (typedCopy) {
+  const introText = "hi, i'm khalid abouelrous.";
+  if (reduceMotion) {
+    typedCopy.textContent = introText;
+  } else {
+    let character = 0;
+    const typeNextCharacter = () => {
+      character += 1;
+      typedCopy.textContent = introText.slice(0, character);
+      if (character < introText.length) setTimeout(typeNextCharacter, 58);
+    };
+    setTimeout(typeNextCharacter, 280);
+  }
+}
 
 function seeded(index) {
   const value = Math.sin(index * 9283.17 + 17.31) * 43758.5453;
@@ -137,6 +153,7 @@ if (projectPage) {
   };
 
   pageHeader.classList.toggle('nav-visible', scrollY <= 8);
+  requestAnimationFrame(() => document.body.classList.add('nav-ready'));
   addEventListener('scroll', updateProjectNav, { passive: true });
 
   const reveals = document.querySelectorAll('.reveal');
