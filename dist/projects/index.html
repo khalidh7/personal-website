@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101411">
+    <meta name="description" content="Distributed systems and infrastructure projects by Khalid Abouelrous.">
+    <title>Projects — Khalid Abouelrous</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23101411'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='monospace' font-size='34' fill='%23d6ded3'%3E%7E%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="/assets/style.css?v=14">
+  </head>
+  <body class="project-page">
+    <canvas id="surface" aria-hidden="true"></canvas>
+    <header>
+      <nav aria-label="Primary navigation">
+        <a href="/">home</a>
+        <a href="/projects/" aria-current="page">projects</a>
+      </nav>
+      <button id="theme" type="button" aria-label="Switch to light mode" aria-pressed="false">light</button>
+    </header>
+
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+    <main>
+      <section class="projects-hero reveal is-visible">
+        <p class="section-kicker">01 — selected work</p>
+        <h1><span>systems built to keep</span><span>working when conditions change.</span></h1>
+        <p class="lede">Two explorations in coordination: one across machines and encrypted state, the other across virtual machines competing for finite hardware.</p>
+        <a class="scroll-cue" href="#distributed-secrets">scroll to explore <span>↓</span></a>
+      </section>
+
+      <article id="distributed-secrets" class="project-story">
+        <div class="project-heading reveal">
+          <p class="section-kicker">01 / distributed systems · security</p>
+          <h2>Distributed<br>Secrets Manager</h2>
+          <p>A Vault-inspired secrets service that treats encryption, availability, and recovery as one system. Encrypted mutations move through a Raft log and become visible only after a quorum has persisted them.</p>
+          <ul class="tech-list" aria-label="Technologies">
+            <li>Go</li><li>Raft</li><li>mTLS</li><li>AES-256-GCM</li><li>Docker</li>
+          </ul>
+          <a class="project-source" href="https://github.com/khalidh7/distributed-secrets" target="_blank" rel="noreferrer">source on github ↗</a>
+        </div>
+
+        <section id="secrets-demo" class="project-demo reveal" aria-labelledby="secrets-demo-title">
+          <div class="demo-header">
+            <div>
+              <p class="section-kicker">interactive failure lab</p>
+              <h3 id="secrets-demo-title">watch the cluster respond.</h3>
+            </div>
+            <p>Three real server processes replicate encrypted state, lose a leader, elect a replacement, and bring the restarted node back up to date.</p>
+          </div>
+          <div class="video-frame">
+            <video controls preload="metadata" playsinline aria-label="Distributed Secrets Manager cluster demonstration">
+              <source src="https://pub-d29dc0f91b694bccb0c20433c6881d44.r2.dev/projects/distributed-secrets/demo.mp4" type="video/mp4">
+              Your browser does not support embedded MP4 video.
+            </video>
+          </div>
+          <p class="video-meta"><span>01:15</span><span>raft failure lab · local three-node cluster</span></p>
+        </section>
+
+        <section class="story-beat reveal">
+          <div class="beat-copy">
+            <span class="beat-number">01.1</span>
+            <h3>a write is a group decision.</h3>
+            <p>The leader authenticates the request, encrypts the new version, and appends only ciphertext to its write-ahead log. Success waits for a majority—not merely a local disk write.</p>
+          </div>
+          <div id="raft-election" class="raft-viz ascii-panel" aria-label="Animated Raft cluster diagram">
+            <div class="request-token">PUT /secret</div>
+            <div class="raft-node leader"><span>node 01</span><b>leader</b><i>WAL · append · fsync</i></div>
+            <div class="raft-node follower one"><span>node 02</span><b>follower</b><i>persisted ✓</i></div>
+            <div class="raft-node follower two"><span>node 03</span><b>follower</b><i>replicating</i></div>
+            <div class="commit-badge">2 / 3 → committed</div>
+          </div>
+        </section>
+
+        <section class="story-beat reverse reveal">
+          <div class="beat-copy">
+            <span class="beat-number">01.2</span>
+            <h3>keys protect keys.</h3>
+            <p>Each secret version receives a fresh data key. A vault-wide encryption key wraps those data keys; a root key protects the vault key. Rotation can replace wrapping keys without touching every encrypted payload.</p>
+          </div>
+          <div class="key-viz ascii-panel" aria-label="Envelope encryption key hierarchy">
+            <div class="key-row root-key"><span>[ root key ]</span><small>split into recovery shares</small></div>
+            <div class="key-arrow">│ wraps</div>
+            <div class="key-row kek"><span>[ vault KEK ]</span><small>unlocked only in memory</small></div>
+            <div class="key-arrow">│ wraps</div>
+            <div class="key-row dek"><span>[ version DEK ]</span><small>new random key per version</small></div>
+            <div class="key-arrow">│ encrypts + AAD</div>
+            <div class="key-row cipher"><span>{ ciphertext }</span><small>bound to path + version</small></div>
+          </div>
+        </section>
+
+        <section class="project-outcome reveal">
+          <p class="section-kicker">failure model</p>
+          <p class="outcome-text">A leader can disappear. A process can restart. A follower can fall behind. The system recovers its log, elects a replacement, repairs divergence, and refuses to invent consensus when quorum is gone.</p>
+          <div class="metrics">
+            <div><strong>3</strong><span>independent nodes</span></div>
+            <div><strong>2/3</strong><span>write quorum</span></div>
+            <div><strong>3-of-5</strong><span>example unseal threshold</span></div>
+          </div>
+        </section>
+      </article>
+
+      <article id="resource-coordinator" class="project-story project-two">
+        <div class="project-heading reveal">
+          <p class="section-kicker">02 / operating systems · virtualization</p>
+          <h2>VM Resource<br>Coordinator</h2>
+          <p>Two periodic C control loops observe live KVM guests through libvirt, then rebalance CPU placement and memory allocations without destabilizing the workloads they manage.</p>
+          <ul class="tech-list" aria-label="Technologies">
+            <li>C</li><li>Linux</li><li>libvirt</li><li>KVM</li><li>QEMU</li>
+          </ul>
+        </div>
+
+        <section class="story-beat reveal">
+          <div class="beat-copy">
+            <span class="beat-number">02.1</span>
+            <h3>measure, place, stabilize.</h3>
+            <p>The scheduler samples vCPU time, estimates utilization, and pins virtual CPUs to physical cores. It seeks a balanced host while avoiding needless migrations once the load is stable.</p>
+          </div>
+          <div class="cpu-viz ascii-panel" aria-label="Animated CPU load balancing diagram">
+            <div class="vm-stream"><span>v0</span><span>v1</span><span>v2</span><span>v3</span><span>v4</span><span>v5</span><span>v6</span><span>v7</span></div>
+            <div class="scheduler-label">↓ sample → sort → pin ↓</div>
+            <div class="cpu-bars">
+              <div><label>p0</label><i style="--load:78%"></i><small>78</small></div>
+              <div><label>p1</label><i style="--load:74%"></i><small>74</small></div>
+              <div><label>p2</label><i style="--load:76%"></i><small>76</small></div>
+              <div><label>p3</label><i style="--load:72%"></i><small>72</small></div>
+            </div>
+            <p class="balance-note">σ ≤ 5 · balanced / stable</p>
+          </div>
+        </section>
+
+        <section class="story-beat reverse reveal">
+          <div class="beat-copy">
+            <span class="beat-number">02.2</span>
+            <h3>memory moves with pressure.</h3>
+            <p>The coordinator expands pressured guests and gradually reclaims unused capacity through ballooning. Guest floors and a host reserve remain hard constraints, even when every VM wants more.</p>
+          </div>
+          <div id="memory-pressure" class="memory-viz ascii-panel" aria-label="Animated virtual machine memory allocation diagram">
+            <div class="memory-host-label">host memory / 16 GB</div>
+            <div class="memory-pool">
+              <div class="memory-vm hot"><span>vm 01</span><i></i><small>pressure ↑</small></div>
+              <div class="memory-vm"><span>vm 02</span><i></i><small>steady</small></div>
+              <div class="memory-vm idle"><span>vm 03</span><i></i><small>idle ↓</small></div>
+              <div class="memory-vm"><span>vm 04</span><i></i><small>steady</small></div>
+            </div>
+            <div class="memory-transfer" aria-label="64 megabytes moving from VM 03 to VM 01">
+              <span>vm 03</span><i><b>64 MB</b></i><span>vm 01</span>
+            </div>
+            <p class="balance-note">guest reserve ≥ 100 MB · host reserve ≥ 200 MB</p>
+          </div>
+        </section>
+
+        <section class="project-outcome reveal">
+          <p class="section-kicker">tested under contention</p>
+          <p class="outcome-text">The policies were exercised with more virtual CPUs than physical cores and multiple guests competing for memory—checking convergence, remapping restraint, and safety boundaries under load.</p>
+          <div class="metrics">
+            <div><strong>8</strong><span>virtual machines</span></div>
+            <div><strong>4</strong><span>physical cores</span></div>
+            <div><strong>16 GB</strong><span>shared host memory</span></div>
+          </div>
+        </section>
+      </article>
+    </main>
+
+    <footer>
+      <p>built around systems that adapt.</p>
+      <p class="channels" aria-label="Social links">
+        <a href="https://github.com/khalidh7" target="_blank" rel="noreferrer">github ↗</a>
+        <a href="https://www.linkedin.com/in/khalidabouelrous/" target="_blank" rel="noreferrer">linkedin ↗</a>
+      </p>
+    </footer>
+    <script type="module" src="/assets/app.js?v=2"></script>
+  </body>
+</html>
