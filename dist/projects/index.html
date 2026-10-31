@@ -107,7 +107,7 @@
           <p class="section-kicker">02 / operating systems · virtualization</p>
           <h2>VM Resource<br>Coordinator</h2>
           <div class="project-details">
-            <p>Two C control loops manage vCPU placement and memory allocation for KVM/QEMU guests through libvirt. The CPU controller updates vCPU-to-pCPU pinning from measured load; the memory controller responds to guest pressure and reclaims idle memory through ballooning.</p>
+            <p>Two C control loops manage vCPU placement and memory allocation for KVM/QEMU guests through libvirt. The CPU controller updates vCPU-to-host-CPU pinning from measured load; the memory controller responds to guest pressure and reclaims idle memory through ballooning.</p>
             <ul class="tech-list" aria-label="Technologies">
               <li>C</li><li>Linux</li><li>libvirt</li><li>KVM</li><li>QEMU</li>
             </ul>
@@ -136,7 +136,7 @@
           <div class="beat-copy">
             <span class="beat-number">02.1</span>
             <h3>vCPU scheduling</h3>
-            <p>The scheduler samples vCPU time, estimates utilization, and pins virtual CPUs to physical cores. It seeks a balanced host while avoiding needless migrations once the load is stable.</p>
+            <p>The scheduler samples vCPU time, estimates utilization, and pins virtual CPUs to host CPU cores. It seeks a balanced host while avoiding needless migrations once the load is stable.</p>
           </div>
           <div class="cpu-viz ascii-panel" aria-label="Animated CPU load balancing diagram">
             <div class="vm-stream"><span>v0</span><span>v1</span><span>v2</span><span>v3</span><span>v4</span><span>v5</span><span>v6</span><span>v7</span></div>
@@ -158,7 +158,7 @@
             <p>The coordinator expands pressured guests and gradually reclaims unused capacity through ballooning. Guest floors and a host reserve remain hard constraints, even when every VM wants more.</p>
           </div>
           <div id="memory-pressure" class="memory-viz ascii-panel" aria-label="Animated virtual machine memory allocation diagram">
-            <div class="memory-host-label">host memory / 16 GB</div>
+            <div class="memory-host-label">host memory / 8 GB</div>
             <div class="memory-pool">
               <div class="memory-vm hot"><span>vm 01</span><i></i><small>pressure ↑</small></div>
               <div class="memory-vm"><span>vm 02</span><i></i><small>steady</small></div>
@@ -177,8 +177,8 @@
           <p class="outcome-text">Evaluated with oversubscribed CPUs and multiple guests competing for memory, with tests for convergence, remapping frequency, and safety limits.</p>
           <div class="metrics">
             <div><strong>8</strong><span>virtual machines</span></div>
-            <div><strong>4</strong><span>physical cores</span></div>
-            <div><strong>16 GB</strong><span>shared host memory</span></div>
+            <div><strong>4</strong><span>host CPU cores</span></div>
+            <div><strong>8 GB</strong><span>shared host memory</span></div>
           </div>
         </section>
       </article>
