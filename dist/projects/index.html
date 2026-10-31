@@ -6,7 +6,8 @@
     <meta name="theme-color" content="#101411">
     <meta name="description" content="Distributed systems and infrastructure projects by Khalid Abouelrous.">
     <title>Projects — Khalid Abouelrous</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23101411'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='monospace' font-size='34' fill='%23d6ded3'%3E%7E%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=1">
+    <link rel="shortcut icon" href="/favicon.svg?v=1">
     <link rel="stylesheet" href="/assets/style.css?v=16">
   </head>
   <body class="project-page">
@@ -23,17 +24,16 @@
 
     <main>
       <section class="projects-hero reveal is-visible">
-        <p class="section-kicker">01 — selected work</p>
-        <h1><span>systems built to keep</span><span>working when conditions change.</span></h1>
-        <p class="lede">Two explorations in coordination: one across machines and encrypted state, the other across virtual machines competing for finite hardware.</p>
-        <a class="scroll-cue" href="#distributed-secrets">scroll to explore <span>↓</span></a>
+        <h1><span>Projects.</span></h1>
+        <p class="lede">Distributed Secrets Manager and VM Resource Coordinator.</p>
+        <a class="scroll-cue" href="#distributed-secrets">view projects <span>↓</span></a>
       </section>
 
       <article id="distributed-secrets" class="project-story">
         <div class="project-heading reveal">
           <p class="section-kicker">01 / distributed systems · security</p>
           <h2>Distributed<br>Secrets Manager</h2>
-          <p>A Vault-inspired secrets service that treats encryption, availability, and recovery as one system. Encrypted mutations move through a Raft log and become visible only after a quorum has persisted them.</p>
+          <p>A distributed secrets service built in Go. It replicates encrypted state through Raft, persists writes for recovery, and requires a quorum before mutations become visible.</p>
           <ul class="tech-list" aria-label="Technologies">
             <li>Go</li><li>Raft</li><li>mTLS</li><li>AES-256-GCM</li><li>Docker</li>
           </ul>
@@ -43,8 +43,8 @@
         <section id="secrets-demo" class="project-demo reveal" aria-labelledby="secrets-demo-title">
           <div class="demo-header">
             <div>
-              <p class="section-kicker">interactive failure lab</p>
-              <h3 id="secrets-demo-title">watch the cluster respond.</h3>
+              <p class="section-kicker">demo</p>
+              <h3 id="secrets-demo-title">Distributed Secrets Manager</h3>
             </div>
             <p>Three real server processes replicate encrypted state, lose a leader, elect a replacement, and bring the restarted node back up to date.</p>
           </div>
@@ -60,7 +60,7 @@
         <section class="story-beat reveal">
           <div class="beat-copy">
             <span class="beat-number">01.1</span>
-            <h3>a write is a group decision.</h3>
+            <h3>Raft replication</h3>
             <p>The leader authenticates the request, encrypts the new version, and appends only ciphertext to its write-ahead log. Success waits for a majority—not merely a local disk write.</p>
           </div>
           <div id="raft-election" class="raft-viz ascii-panel" aria-label="Animated Raft cluster diagram">
@@ -75,7 +75,7 @@
         <section class="story-beat reverse reveal">
           <div class="beat-copy">
             <span class="beat-number">01.2</span>
-            <h3>keys protect keys.</h3>
+            <h3>Envelope encryption</h3>
             <p>Each secret version receives a fresh data key. A vault-wide encryption key wraps those data keys; a root key protects the vault key. Rotation can replace wrapping keys without touching every encrypted payload.</p>
           </div>
           <div class="key-viz ascii-panel" aria-label="Envelope encryption key hierarchy">
@@ -91,7 +91,7 @@
 
         <section class="project-outcome reveal">
           <p class="section-kicker">failure model</p>
-          <p class="outcome-text">A leader can disappear. A process can restart. A follower can fall behind. The system recovers its log, elects a replacement, repairs divergence, and refuses to invent consensus when quorum is gone.</p>
+          <p class="outcome-text">Handles leader loss, process restarts, and lagging followers through log recovery, leader election, divergence repair, and quorum enforcement.</p>
           <div class="metrics">
             <div><strong>3</strong><span>independent nodes</span></div>
             <div><strong>2/3</strong><span>write quorum</span></div>
@@ -104,16 +104,34 @@
         <div class="project-heading reveal">
           <p class="section-kicker">02 / operating systems · virtualization</p>
           <h2>VM Resource<br>Coordinator</h2>
-          <p>Two periodic C control loops observe live KVM guests through libvirt, then rebalance CPU placement and memory allocations without destabilizing the workloads they manage.</p>
+          <p>Two C control loops use libvirt to monitor live KVM guests, rebalance vCPU placement, and coordinate memory allocation.</p>
           <ul class="tech-list" aria-label="Technologies">
             <li>C</li><li>Linux</li><li>libvirt</li><li>KVM</li><li>QEMU</li>
           </ul>
+          <a class="project-source" href="https://github.com/khalidh7/hypervisor-schedulers" target="_blank" rel="noreferrer">source on github ↗</a>
         </div>
+
+        <section id="hypervisor-demo" class="project-demo reveal" aria-labelledby="hypervisor-demo-title">
+          <div class="demo-header">
+            <div>
+              <p class="section-kicker">demo</p>
+              <h3 id="hypervisor-demo-title">VM Resource Coordinator</h3>
+            </div>
+            <p>Live KVM guests compete for finite CPU and memory while the coordinators observe pressure, rebalance placement, and preserve host and guest safety reserves.</p>
+          </div>
+          <div class="video-frame">
+            <video controls preload="metadata" playsinline aria-label="VM CPU scheduler and memory coordinator demonstration">
+              <source src="https://pub-d29dc0f91b694bccb0c20433c6881d44.r2.dev/projects/hypervisor-lab/demo.mp4" type="video/mp4">
+              Your browser does not support embedded MP4 video.
+            </video>
+          </div>
+          <p class="video-meta"><span>01:25</span><span>libvirt · live KVM guests</span></p>
+        </section>
 
         <section class="story-beat reveal">
           <div class="beat-copy">
             <span class="beat-number">02.1</span>
-            <h3>measure, place, stabilize.</h3>
+            <h3>vCPU scheduling</h3>
             <p>The scheduler samples vCPU time, estimates utilization, and pins virtual CPUs to physical cores. It seeks a balanced host while avoiding needless migrations once the load is stable.</p>
           </div>
           <div class="cpu-viz ascii-panel" aria-label="Animated CPU load balancing diagram">
@@ -132,7 +150,7 @@
         <section class="story-beat reverse reveal">
           <div class="beat-copy">
             <span class="beat-number">02.2</span>
-            <h3>memory moves with pressure.</h3>
+            <h3>Memory coordination</h3>
             <p>The coordinator expands pressured guests and gradually reclaims unused capacity through ballooning. Guest floors and a host reserve remain hard constraints, even when every VM wants more.</p>
           </div>
           <div id="memory-pressure" class="memory-viz ascii-panel" aria-label="Animated virtual machine memory allocation diagram">
@@ -152,7 +170,7 @@
 
         <section class="project-outcome reveal">
           <p class="section-kicker">tested under contention</p>
-          <p class="outcome-text">The policies were exercised with more virtual CPUs than physical cores and multiple guests competing for memory—checking convergence, remapping restraint, and safety boundaries under load.</p>
+          <p class="outcome-text">Evaluated with oversubscribed CPUs and multiple guests competing for memory, with tests for convergence, remapping frequency, and safety limits.</p>
           <div class="metrics">
             <div><strong>8</strong><span>virtual machines</span></div>
             <div><strong>4</strong><span>physical cores</span></div>
@@ -163,7 +181,7 @@
     </main>
 
     <footer>
-      <p>built around systems that adapt.</p>
+      <p>khalid abouelrous.</p>
       <p class="channels" aria-label="Social links">
         <a href="https://github.com/khalidh7" target="_blank" rel="noreferrer">github ↗</a>
         <a href="https://www.linkedin.com/in/khalidabouelrous/" target="_blank" rel="noreferrer">linkedin ↗</a>
