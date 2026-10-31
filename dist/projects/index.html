@@ -104,7 +104,7 @@
         <div class="project-heading reveal">
           <p class="section-kicker">02 / operating systems · virtualization</p>
           <h2>VM Resource<br>Coordinator</h2>
-          <p>Two C control loops use libvirt to monitor live KVM guests, rebalance vCPU placement, and coordinate memory allocation.</p>
+          <p>Two C control loops manage vCPU placement and memory allocation for KVM/QEMU guests through libvirt. The CPU controller updates vCPU-to-pCPU pinning from measured load; the memory controller responds to guest pressure and reclaims idle memory through ballooning.</p>
           <ul class="tech-list" aria-label="Technologies">
             <li>C</li><li>Linux</li><li>libvirt</li><li>KVM</li><li>QEMU</li>
           </ul>
@@ -117,7 +117,7 @@
               <p class="section-kicker">demo</p>
               <h3 id="hypervisor-demo-title">VM Resource Coordinator</h3>
             </div>
-            <p>Live KVM guests compete for finite CPU and memory while the coordinators observe pressure, rebalance placement, and preserve host and guest safety reserves.</p>
+            <p>A web-based laboratory automates VM lifecycle, workload scenarios, and live performance analysis for both controllers.</p>
           </div>
           <div class="video-frame">
             <video controls preload="metadata" playsinline aria-label="VM CPU scheduler and memory coordinator demonstration">
