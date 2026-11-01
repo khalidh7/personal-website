@@ -18,8 +18,10 @@ The site is intentionally dependency-free. There is no build step; `dist` is the
 dist/
 ├── assets/          # shared CSS and JavaScript
 ├── index.html       # /
-└── projects/
-    └── index.html   # /projects/
+├── projects/
+│   └── index.html   # /projects/
+└── debug-doodles/
+    └── index.html   # /debug-doodles/
 ```
 
 Add future pages as `dist/<route>/index.html` and reuse the root-relative files in `dist/assets/`.
