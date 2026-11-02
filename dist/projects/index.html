@@ -8,7 +8,7 @@
     <title>Khalid Abouelrous</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=1">
     <link rel="shortcut icon" href="/favicon.svg?v=1">
-    <link rel="stylesheet" href="/assets/style.css?v=16">
+    <link rel="stylesheet" href="/assets/style.css?v=18">
   </head>
   <body class="project-page">
     <canvas id="surface" aria-hidden="true"></canvas>
@@ -23,13 +23,38 @@
     <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
     <main>
-      <section class="projects-hero reveal is-visible">
-        <h1><span>Projects.</span></h1>
-        <p class="lede">Distributed Secrets Manager and VM Resource Coordinator.</p>
-        <a class="scroll-cue" href="#distributed-secrets">view projects <span>↓</span></a>
+      <section id="projects" class="projects-hero reveal is-visible">
+        <div class="projects-intro">
+          <p class="section-kicker">selected work / <span id="project-count">02</span> projects</p>
+          <h1><span>Projects.</span></h1>
+          <p class="chooser-hint">select a project <span aria-hidden="true">↘</span></p>
+        </div>
+        <div class="project-tiles" aria-label="Choose a project">
+          <div class="project-tile tile-secrets">
+            <button class="project-tile-button" type="button" data-project="distributed-secrets" aria-controls="distributed-secrets" aria-expanded="false">
+              <span class="tile-top"><span>01 / distributed systems</span><span aria-hidden="true">↗</span></span>
+              <span class="tile-visual tile-visual-secrets" aria-hidden="true"><i>client</i><b>→</b><i>leader</i><b>⇄</b><i>quorum</i></span>
+              <span class="tile-title">Distributed<br>Secrets Manager</span>
+              <span class="tile-description">Encrypted state, replicated through Raft with quorum-backed writes and recovery.</span>
+              <span class="tile-open">open project <span aria-hidden="true">↗</span></span>
+            </button>
+            <a class="tile-source" href="https://github.com/khalidh7/distributed-secrets" target="_blank" rel="noreferrer">source / github ↗</a>
+          </div>
+          <div class="project-tile tile-vm">
+            <button class="project-tile-button" type="button" data-project="resource-coordinator" aria-controls="resource-coordinator" aria-expanded="false">
+              <span class="tile-top"><span>02 / virtualization</span><span aria-hidden="true">↗</span></span>
+              <span class="tile-visual tile-visual-vm" aria-hidden="true"><i>vCPU</i><b>↔</b><i>scheduler</i><b>↔</b><i>memory</i></span>
+              <span class="tile-title">VM Resource<br>Coordinator</span>
+              <span class="tile-description">Live CPU placement and memory allocation for KVM guests under contention.</span>
+              <span class="tile-open">open project <span aria-hidden="true">↗</span></span>
+            </button>
+            <a class="tile-source" href="https://github.com/khalidh7/hypervisor-schedulers" target="_blank" rel="noreferrer">source / github ↗</a>
+          </div>
+        </div>
       </section>
 
       <article id="distributed-secrets" class="project-story">
+        <a class="back-to-projects" href="#projects">← all projects</a>
         <div class="project-heading reveal">
           <p class="section-kicker">01 / distributed systems · security</p>
           <h2>Distributed<br>Secrets Manager</h2>
@@ -103,6 +128,7 @@
       </article>
 
       <article id="resource-coordinator" class="project-story project-two">
+        <a class="back-to-projects" href="#projects">← all projects</a>
         <div class="project-heading reveal">
           <p class="section-kicker">02 / operating systems · virtualization</p>
           <h2>VM Resource<br>Coordinator</h2>
@@ -191,6 +217,6 @@
         <a href="https://www.linkedin.com/in/khalidabouelrous/" target="_blank" rel="noreferrer">linkedin ↗</a>
       </p>
     </footer>
-    <script type="module" src="/assets/app.js?v=2"></script>
+    <script type="module" src="/assets/app.js?v=4"></script>
   </body>
 </html>

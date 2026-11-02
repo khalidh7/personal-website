@@ -130,6 +130,39 @@ document.addEventListener('visibilitychange', () => {
 });
 
 if (projectPage) {
+  const projectButtons = [...document.querySelectorAll('[data-project]')];
+  const projectStories = [...document.querySelectorAll('.project-story')];
+  const projectIds = new Set(projectStories.map((story) => story.id));
+  document.querySelector('#project-count').textContent = String(projectButtons.length).padStart(2, '0');
+  const projectForHash = () => {
+    const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    const story = target?.closest('.project-story');
+    return story && projectIds.has(story.id) ? story.id : null;
+  };
+  const selectProject = (id) => {
+    document.body.classList.toggle('has-selection', Boolean(id));
+    projectStories.forEach((story) => {
+      const selected = story.id === id;
+      story.classList.toggle('is-selected', selected);
+      if (!selected) story.querySelectorAll('video').forEach((video) => video.pause());
+    });
+    projectButtons.forEach((button) => {
+      const selected = button.dataset.project === id;
+      button.setAttribute('aria-expanded', String(selected));
+      button.closest('.project-tile').classList.toggle('is-active', selected);
+    });
+    document.body.classList.add('project-ready');
+    requestAnimationFrame(updateProgress);
+  };
+  projectButtons.forEach((button) => button.addEventListener('click', () => {
+    const id = button.dataset.project;
+    history.pushState(null, '', `#${id}`);
+    selectProject(id);
+    requestAnimationFrame(() => document.getElementById(id).scrollIntoView({ behavior: reduceMotion ? 'instant' : 'smooth' }));
+  }));
+  addEventListener('hashchange', () => selectProject(projectForHash()));
+  addEventListener('popstate', () => selectProject(projectForHash()));
+
   const pageHeader = document.querySelector('header');
   let lastScrollY = scrollY;
   let upwardTravel = 0;
@@ -174,6 +207,8 @@ if (projectPage) {
     progressBar.style.width = `${Math.min(1, progress) * 100}%`;
   };
   addEventListener('scroll', updateProgress, { passive: true });
+  selectProject(projectForHash());
+  if (projectForHash()) requestAnimationFrame(() => document.getElementById(location.hash.slice(1))?.scrollIntoView());
   updateProgress();
 }
 
